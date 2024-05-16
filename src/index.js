@@ -136,6 +136,19 @@ async function ensureDirectories() {
   }
 }
 
-ensureDirectories().then(() => {
-  main("DQacCB9tDaw");
-});
+async function main() {
+  const videoId = process.argv[2];
+  if (!videoId) {
+    console.error("Error: Missing YouTube video ID. Usage: node index.js <videoId>");
+    process.exit(1);
+  }
+
+  const transcript = await getTranscript(videoId);
+  if (transcript.text) {
+    await summarizeTranscript(transcript);
+  } else {
+    console.log(`No transcript available for video ${videoId}`);
+  }
+}
+
+ensureDirectories().then(main);
